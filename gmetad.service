@@ -1,0 +1,20 @@
+[Unit]
+Description=Ganglia Metadata Service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+EnvironmentFile=/etc/environment
+Environment="TAG=0.0.1"
+Environment="ENV=test"
+ExecStart=/usr/bin/docker run --name gmetad \
+                              --env GMETAD_DEBUG_LEVEL=1 \
+                              --hostname gmetad.${ENV}.cluster.local \
+                              --volume /var/lib/ganglia/rrds \
+                              emmanuel/gmetad:${TAG}
+
+ExecStop=/usr/bin/docker kill gmetad
+
+[Install]
+WantedBy=multi-user.target
